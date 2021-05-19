@@ -34,4 +34,10 @@ export class RecipeResolver {
     await Recipe.update({ id }, fields);
     return true;
   }
+
+  @Mutation(() => Boolean)
+  async deleteCategory(@Arg("id", () => Int) id: number) {
+    await Recipe.delete(id);
+    return true;
+  }
 }

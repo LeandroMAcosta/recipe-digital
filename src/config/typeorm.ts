@@ -9,7 +9,7 @@ export async function connect() {
     database: "recipe_db",
     username: "recipe",
     password: "r3c1p3",
-    entities: [path.join(__dirname, "../recipe/models/**.ts")],
+    entities: [path.join(__dirname, "../**/models/**.ts")],
     synchronize: true,
   });
   console.log("DB conected");
