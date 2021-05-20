@@ -19,7 +19,6 @@ export function generateToken(user: User): tokenObject {
 }
 
 export function decodeToken(token: string): tokenPayload {
-
   if (token.startsWith("Bearer")) {
     token = token.split(" ")[1];
   }

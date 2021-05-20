@@ -6,7 +6,7 @@ import { decodeToken } from "../utils/jwt";
 
 const authChecker: AuthChecker = ({ context }): boolean => {
   const { token } = context as Context;
-  const tokenValue = token.split(" ")[1];
+  const tokenValue = token!.split(" ")[1];
   if (!tokenValue) {
     throw new ApolloError(
       "Invalid authorization header, Format must be Bearer <jwt>",

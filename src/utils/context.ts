@@ -4,6 +4,6 @@ import { User } from "../user/models/User";
 export interface Context {
   req: Request;
   res: Response;
-  token: String;
-  user: User;
+  token: String | undefined;
+  user: User | undefined;
 }

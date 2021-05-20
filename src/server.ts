@@ -10,6 +10,7 @@ import jwt from "express-jwt";
 import { Context } from "./utils";
 import { config } from "dotenv";
 import { decodeToken } from "./auth/utils/jwt";
+import { User } from "./user/models/User";
 
 config();
 
@@ -25,8 +26,10 @@ export async function startServer() {
       container: Container
     }),
     context: ({ req, res }) => {
-      const token = req.headers.authorization || "";
-      const { user } = decodeToken(token);
+      const token = req.headers.authorization;
+      let user: User | undefined = undefined;
+      if (token) user = decodeToken(token).user;
+      
       const context: Context = {
         req,
         res,

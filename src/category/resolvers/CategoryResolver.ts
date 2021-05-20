@@ -36,7 +36,7 @@ export class CategoryResolver {
     @Arg("categoryInput", () => CategoryInput) categoryInput: CategoryInput
   ) {
     return this.categoryService.createCategory(
-      context.user,
+      context.user!,
       categoryInput.name
     );
   }
@@ -48,12 +48,12 @@ export class CategoryResolver {
     @Arg("id", () => Int) id: number,
     @Arg("fields", () => CategoryUpdateInput) fields: CategoryUpdateInput
   ) {
-    return this.categoryService.updateCategory(context.user, id, fields);
+    return this.categoryService.updateCategory(context.user!, id, fields);
   }
 
   @Authorized()
   @Mutation(() => Boolean)
   deleteCategory(@Ctx() context: Context, @Arg("id", () => Int) id: number) {
-    this.categoryService.deleteCategory(context.user, id);
+    this.categoryService.deleteCategory(context.user!, id);
   }
 }

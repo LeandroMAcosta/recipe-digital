@@ -16,7 +16,7 @@ export class AuthenticationResolver {
   @Query(() => User, { nullable: true })
   @Authorized()
   me(@Ctx() context: Context): User {
-    return context.user;
+    return context.user!;
   }
 
   @Mutation(() => RegisterPayload)

@@ -38,7 +38,7 @@ export class RecipeResolver {
     { name, description, ingredients, categoryId }: RecipeInput
   ) {
     return this.recipeService.createRecipe(
-      context.user,
+      context.user!,
       name,
       description,
       ingredients,
@@ -53,13 +53,13 @@ export class RecipeResolver {
     @Arg("id", () => Int) id: number,
     @Arg("fields", () => RecipeUpdateInput) fields: RecipeUpdateInput
   ) {
-    return this.recipeService.updateRecipe(context.user, id, fields);
+    return this.recipeService.updateRecipe(context.user!, id, fields);
   }
 
   @Authorized()
   @Mutation(() => Boolean)
   deleteCategory(@Ctx() context: Context, @Arg("id", () => Int) id: number) {
-    this.recipeService.deleteRecipe(context.user, id);
+    this.recipeService.deleteRecipe(context.user!, id);
     return true;
   }
 }
