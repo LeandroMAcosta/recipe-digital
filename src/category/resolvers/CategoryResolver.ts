@@ -3,8 +3,6 @@ import {
   Query,
   Resolver,
   Arg,
-  InputType,
-  Field,
   Int,
 } from "type-graphql";
 import { CategoryInput } from "../models/inputs/CategoryInput";

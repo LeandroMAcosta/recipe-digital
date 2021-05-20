@@ -3,9 +3,8 @@ import {
   Query,
   Resolver,
   Arg,
-  InputType,
-  Field,
   Int,
+  Authorized,
 } from "type-graphql";
 import { RecipeInput } from "../models/inputs/RecipeInput";
 import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
@@ -13,6 +12,8 @@ import { Recipe } from "../models/Recipe";
 
 @Resolver()
 export class RecipeResolver {
+
+  @Authorized()
   @Query(() => [Recipe])
   async getRecipes() {
     return await Recipe.find();

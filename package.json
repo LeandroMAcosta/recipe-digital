@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts --exec ts-node"
+    "dev": "nodemon --delay 500ms src/index.ts --exec ts-node"
   },
   "repository": {
     "type": "git",
@@ -19,16 +19,24 @@
   "homepage": "https://github.com/LeandroMAcosta/recipe-digital#readme",
   "dependencies": {
     "apollo-server-express": "^2.24.1",
+    "bcrypt": "^5.0.1",
     "class-validator": "^0.13.1",
+    "dotenv": "^8.6.0",
     "express": "^4.17.1",
+    "express-jwt": "^6.0.0",
     "graphql": "^15.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
     "typeorm": "^0.2.32"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.11",
+    "@types/express-jwt": "^6.0.1",
+    "@types/jsonwebtoken": "^8.5.1",
     "@types/node": "^15.3.0",
     "nodemon": "^2.0.7",
     "ts-node": "^9.1.1",
