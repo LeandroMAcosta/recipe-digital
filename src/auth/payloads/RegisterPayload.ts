@@ -1,8 +1,8 @@
 import { Field, ObjectType } from "type-graphql";
-import { User } from "../models/User";
+import { User } from "../../user/models/User";
 
 @ObjectType()
-export class UserPayload {
+export class RegisterPayload {
   @Field(() => User, { nullable: true })
   user?: User;
 

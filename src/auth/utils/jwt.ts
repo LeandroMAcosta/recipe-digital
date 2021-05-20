@@ -4,7 +4,6 @@ import { User } from "../../user/models/User";
 import { tokenObject } from "../types/tokenObject";
 import { tokenPayload } from "../types/tokenPayload";
 
-
 export function generateToken(user: User): tokenObject {
   const expiration = moment().add(24, "hour").unix();
   const tokenPayload: tokenPayload = {
@@ -20,9 +19,14 @@ export function generateToken(user: User): tokenObject {
 }
 
 export function decodeToken(token: string): tokenPayload {
-  const decoded = jwt.verify(
+
+  if (token.startsWith("Bearer")) {
+    token = token.split(" ")[1];
+  }
+
+  const tokenPayload = jwt.verify(
     token,
     process.env.JWT_PRIVATE_KEY || ""
   ) as tokenPayload;
-  return decoded;
+  return tokenPayload;
 }

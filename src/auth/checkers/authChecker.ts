@@ -7,7 +7,6 @@ import { tokenPayload } from "../types/tokenPayload";
 
 const authChecker: AuthChecker = ({ context }): boolean => {
   const { token } = context as Context;
-
   const tokenValue = token.split(" ")[1];
   if (!tokenValue) {
     throw new ApolloError(
