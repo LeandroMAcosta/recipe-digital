@@ -1,13 +1,12 @@
 import { Field, ObjectType } from "type-graphql";
 
 @ObjectType()
-export class LoginResponse {
-  @Field()
-  message!: string;
-  
+export class LoginPayload {
+
   @Field({ nullable: true })
   token?: string;
-  
-  @Field()
-  status!: number;
+
+  @Field({ nullable: true })
+  message?: string;
+
 }
