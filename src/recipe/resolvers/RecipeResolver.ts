@@ -26,7 +26,7 @@ export class RecipeResolver {
 
   @Authorized()
   @Query(() => Recipe)
-  getOneRecipes(@Arg("id", () => Int) id: number) {
+  getOneRecipe(@Arg("id", () => Int) id: number) {
     return this.recipeService.getOneRecipe(id);
   }
 
