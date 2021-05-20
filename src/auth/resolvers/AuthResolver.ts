@@ -13,6 +13,12 @@ import AuthService from "../service/AuthService";
 export class AuthenticationResolver {
   constructor(private readonly authService: AuthService) {}
 
+  @Query(() => User, { nullable: true })
+  @Authorized()
+  me(@Ctx() context: Context): User {
+    return context.user;
+  }
+
   @Mutation(() => RegisterPayload)
   signUp(@Arg("input") { name, email, password }: RegisterInput) {
     return this.authService.signUp(name, email, password);
@@ -21,12 +27,5 @@ export class AuthenticationResolver {
   @Mutation(() => LoginPayload)
   login(@Arg("input", { nullable: false }) { email, password }: LoginInput) {
     return this.authService.signIn(email, password);
-  }
-
-  @Query(() => User, { nullable: true })
-  @Authorized()
-  me(@Ctx() context: Context): User {
-    // const tokenPayload: tokenPayload = decodeToken(context.token as string);
-    return context.user;
   }
 }

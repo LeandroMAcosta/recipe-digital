@@ -1,6 +1,8 @@
 import { Service } from "typedi";
 import { Repository } from "typeorm";
 import { InjectRepository } from "typeorm-typedi-extensions";
+import { Category } from "../../category/models/Category";
+import CategoryService from "../../category/services/CategoryService";
 import { User } from "../../user/models/User";
 import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
 import { Recipe } from "../models/Recipe";
@@ -8,7 +10,9 @@ import { Recipe } from "../models/Recipe";
 @Service()
 export default class AuthService {
   constructor(
-    @InjectRepository(Recipe) private readonly recipeRepository: Repository<Recipe>
+    @InjectRepository(Recipe)
+    private readonly recipeRepository: Repository<Recipe>,
+    private readonly categoryService: CategoryService
   ) {}
 
   async getRecipes() {
@@ -16,14 +20,17 @@ export default class AuthService {
   }
 
   async getOneRecipe(id: number) {
-    return await this.recipeRepository.findOne(id);
+    return await this.recipeRepository.findOneOrFail(id);
   }
 
   async getMyRecipes(user: User) {
-    // TODO
+    return this.recipeRepository.find({
+      owner: {
+        id: user.id,
+      },
+    });
   }
 
-  // TODO es la mejor forma de traer usuario?
   async createRecipe(
     user: User,
     name: string,
@@ -31,9 +38,14 @@ export default class AuthService {
     ingredients: string,
     categoryId: number
   ) {
-    // TODO: add category
-    if (categoryId) if (user) user = user;
+
+    const category: Category = await this.categoryService.getOneCategory(
+      categoryId
+    );
+
     const newRecipe: Recipe = this.recipeRepository.create({
+      owner: user,
+      category,
       name,
       description,
       ingredients,
@@ -43,12 +55,21 @@ export default class AuthService {
   }
 
   // TODO: check ownership
-  async updateRecipe(id: number, fields: RecipeUpdateInput) {
-    return await this.recipeRepository.update(id, fields);
+  async updateRecipe(user: User, id: number, fields: RecipeUpdateInput) {
+    return await this.recipeRepository.update(
+      {
+        id,
+        owner: { id: user.id },
+      },
+      fields
+    );
   }
 
   // TODO: check ownership
-  async deleteRecipe(id: number) {
-    return await this.recipeRepository.delete(id);
+  async deleteRecipe(user: User, id: number) {
+    return await this.recipeRepository.delete({
+      id,
+      owner: { id: user.id },
+    });
   }
 }

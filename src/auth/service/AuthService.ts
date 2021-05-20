@@ -23,11 +23,11 @@ export default class AuthService {
     const salt = bcrypt.genSaltSync(15);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
-    const newUser = await User.create({
+    const newUser = await this.userRepository.create({
       name,
       email,
       password: hashedPassword,
-    }).save();
+    });
 
     const tokenObject: tokenObject = generateToken(newUser);
 
@@ -35,7 +35,7 @@ export default class AuthService {
   }
 
   async signIn(email: string, password: string) {
-    const user: User = (await User.findOne({ email })) as User;
+    const user: User | undefined = await this.userRepository.findOne({ email });
 
     if (!user) {
       return new AuthenticationError("User does not exist.");

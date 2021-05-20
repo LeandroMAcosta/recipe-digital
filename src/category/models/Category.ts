@@ -1,19 +1,28 @@
 import { Field, ObjectType } from "type-graphql";
 import {
   Entity,
-  BaseEntity,
   UpdateDateColumn,
   CreateDateColumn,
   PrimaryGeneratedColumn,
   Column,
+  ManyToOne,
+  OneToMany,
 } from "typeorm";
+import { Recipe } from "../../recipe/models/Recipe";
+import { User } from "../../user/models/User";
 
 @ObjectType()
 @Entity()
-export class Category extends BaseEntity {
+export class Category {
   @Field()
   @PrimaryGeneratedColumn()
   id!: number;
+
+  @ManyToOne(() => User, user => user.categories)
+  owner!: User;
+
+  @OneToMany(() => Recipe, recipe => recipe.category)
+  recipes?: Recipe[];
 
   @Field()
   @CreateDateColumn()

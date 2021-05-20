@@ -49,16 +49,17 @@ export class RecipeResolver {
   @Authorized()
   @Mutation(() => Recipe)
   updateRecipe(
+    @Ctx() context: Context,
     @Arg("id", () => Int) id: number,
     @Arg("fields", () => RecipeUpdateInput) fields: RecipeUpdateInput
   ) {
-    return this.recipeService.updateRecipe(id, fields);
+    return this.recipeService.updateRecipe(context.user, id, fields);
   }
 
   @Authorized()
   @Mutation(() => Boolean)
-  deleteCategory(@Arg("id", () => Int) id: number) {
-    this.recipeService.deleteRecipe(id);
+  deleteCategory(@Ctx() context: Context, @Arg("id", () => Int) id: number) {
+    this.recipeService.deleteRecipe(context.user, id);
     return true;
   }
 }

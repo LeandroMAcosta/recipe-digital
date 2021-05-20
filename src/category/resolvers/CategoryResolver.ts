@@ -4,47 +4,56 @@ import {
   Resolver,
   Arg,
   Int,
+  Authorized,
+  Ctx,
 } from "type-graphql";
 import { CategoryInput } from "../models/inputs/CategoryInput";
 import { CategoryUpdateInput } from "../models/inputs/CategoryUpdateInput";
 import { Category } from "../models/Category";
 import { Service } from "typedi";
-import { InjectRepository } from "typeorm-typedi-extensions";
-import { Repository } from "typeorm";
+import CategoryService from "../services/CategoryService";
+import { Context } from "../../utils";
 
 @Service()
 @Resolver()
 export class CategoryResolver {
-  
-  constructor(
-    @InjectRepository(Category) private readonly categoryRepository: Repository<Category>
-  ) {}
-  
+  constructor(private readonly categoryService: CategoryService) {}
+
   @Query(() => [Category])
-  async getCategories() {
-    return await this.categoryRepository.find();
+  getCategories() {
+    return this.categoryService.getCategories();
   }
 
+  @Query(() => Category)
+  getOneCategory(@Arg("id", () => Int) id: number) {
+    return this.categoryService.getOneCategory(id);
+  }
+
+  @Authorized()
   @Mutation(() => Category)
-  async createCategory(
+  createCategory(
+    @Ctx() context: Context,
     @Arg("categoryInput", () => CategoryInput) categoryInput: CategoryInput
   ) {
-    const newCategory = Category.create(categoryInput);
-    return await newCategory.save();
+    return this.categoryService.createCategory(
+      context.user,
+      categoryInput.name
+    );
   }
 
-  @Mutation(() => Boolean)
-  async updateCategory(
+  @Authorized()
+  @Mutation(() => Category)
+  updateCategory(
+    @Ctx() context: Context,
     @Arg("id", () => Int) id: number,
     @Arg("fields", () => CategoryUpdateInput) fields: CategoryUpdateInput
   ) {
-    await Category.update({ id }, fields);
-    return true;
+    return this.categoryService.updateCategory(context.user, id, fields);
   }
 
+  @Authorized()
   @Mutation(() => Boolean)
-  async deleteCategory(@Arg("id", () => Int) id: number) {
-    await Category.delete(id);
-    return true;
+  deleteCategory(@Ctx() context: Context, @Arg("id", () => Int) id: number) {
+    this.categoryService.deleteCategory(context.user, id);
   }
 }
