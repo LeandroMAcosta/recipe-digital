@@ -7,6 +7,9 @@ export class LoginPayload {
   token?: string;
 
   @Field({ nullable: true })
-  message?: string;
+  expiration?: number;
+
+  @Field({ nullable: true })
+  message!: string;
 
 }

@@ -2,8 +2,8 @@ import { AuthChecker } from "type-graphql";
 import { ApolloError } from "apollo-server-express";
 import { isExpired } from "../../utils";
 import { Context } from "../../utils/context";
-import { verify } from "../utils/jwt";
-import { tokenObject } from "../types/tokenObject";
+import { decodeToken } from "../utils/jwt";
+import { tokenPayload } from "../types/tokenPayload";
 
 const authChecker: AuthChecker = ({ context }): boolean => {
   const { token } = context as Context;
@@ -16,7 +16,7 @@ const authChecker: AuthChecker = ({ context }): boolean => {
     );
   }
 
-  const tokenData: tokenObject = verify(tokenValue);
+  const tokenData: tokenPayload = decodeToken(tokenValue);
   return isExpired(tokenData.exp);
 };
 

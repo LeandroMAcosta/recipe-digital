@@ -1,7 +1,10 @@
-import { createConnection } from "typeorm";
+import { createConnection, useContainer } from "typeorm";
 import path from "path";
+import Container from "typedi";
 
 export async function connect() {
+  // TODO: usar variables de entorno
+  useContainer(Container);
   await createConnection({
     type: "mysql",
     host: "localhost",

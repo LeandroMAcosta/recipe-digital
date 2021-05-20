@@ -6,27 +6,21 @@ import { Context } from "../../utils";
 import { UserPayload } from "../../user/payloads/UserPayload";
 import { RegisterInput } from "../inputs/RegisterInput";
 import { LoginPayload } from "../payloads/LoginPayload";
-import { sign } from "../utils/jwt";
-import { ApolloError, AuthenticationError } from "apollo-server-express";
+import { AuthenticationError } from "apollo-server-express";
+import { Service } from "typedi";
+import AuthService from "../service/AuthService";
+import { decodeToken, generateToken } from "../utils/jwt";
+import { tokenObject } from "../types/tokenObject";
 
+@Service()
 @Resolver()
 export class AuthenticationResolver {
+  
+  constructor(private readonly authService: AuthService) {}
+
   @Mutation(() => UserPayload)
   async register(@Arg("input") { name, email, password }: RegisterInput) {
-    const hashedPassword = bcrypt.hashSync(password, 12);
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      return new ApolloError("Email already in use.");
-    }
-
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-    }).save();
-
-    return { user };
+    return this.authService.signUp(name, email, password);
   }
 
   @Mutation(() => LoginPayload)
@@ -44,18 +38,19 @@ export class AuthenticationResolver {
     if (!isAuthenticated) {
       return new AuthenticationError("Incorrect password.");
     }
-    const token = sign(user);
+
+    const tokenObject: tokenObject = generateToken(user);
     return {
       message: "Login Success",
-      token: token,
+      ...tokenObject
     };
   }
 
   @Query(() => User, { nullable: true })
   @Authorized()
   async me(@Ctx() context: Context): Promise<User | undefined> {
-    console.log(context.req.user);
-    return User.findOne(1);
+    const user: User = decodeToken(context.token as string).user;
+    return user;
   }
 
   // @Mutation(() => Boolean)

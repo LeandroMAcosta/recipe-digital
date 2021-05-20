@@ -8,12 +8,21 @@ import {
 import { CategoryInput } from "../models/inputs/CategoryInput";
 import { CategoryUpdateInput } from "../models/inputs/CategoryUpdateInput";
 import { Category } from "../models/Category";
+import { Service } from "typedi";
+import { InjectRepository } from "typeorm-typedi-extensions";
+import { Repository } from "typeorm";
 
+@Service()
 @Resolver()
 export class CategoryResolver {
+  
+  constructor(
+    @InjectRepository(Category) private readonly categoryRepository: Repository<Category>
+  ) {}
+  
   @Query(() => [Category])
   async getCategories() {
-    return await Category.find();
+    return await this.categoryRepository.find();
   }
 
   @Mutation(() => Category)

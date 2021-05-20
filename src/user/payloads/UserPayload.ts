@@ -7,6 +7,12 @@ export class UserPayload {
   user?: User;
 
   @Field({ nullable: true })
+  token?: string;
+
+  @Field({ nullable: true })
+  expiration?: number;
+
+  @Field({ nullable: true })
   message?: string;
 
 }

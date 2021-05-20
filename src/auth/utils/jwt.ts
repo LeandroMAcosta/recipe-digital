@@ -1,26 +1,28 @@
-import jwt from "jsonwebtoken";
-import { config } from "dotenv";
 import moment from "moment";
+import jwt from "jsonwebtoken";
 import { User } from "../../user/models/User";
 import { tokenObject } from "../types/tokenObject";
+import { tokenPayload } from "../types/tokenPayload";
 
-config();
 
-export const sign = (user: User): string => {
-  const obj: tokenObject = {
-    // TODO dot env configuration
-    exp: moment().add(24, "hour").unix(),
+export function generateToken(user: User): tokenObject {
+  const expiration = moment().add(24, "hour").unix();
+  const tokenPayload: tokenPayload = {
     user,
+    exp: expiration,
   };
 
-  const token = jwt.sign(obj, process.env.JWT_PRIVATE_KEY || "");
-  return token;
-};
+  const token: string = jwt.sign(
+    tokenPayload,
+    process.env.JWT_PRIVATE_KEY || ""
+  );
+  return { token, expiration };
+}
 
-export const verify = (token: string): tokenObject => {
+export function decodeToken(token: string): tokenPayload {
   const decoded = jwt.verify(
     token,
     process.env.JWT_PRIVATE_KEY || ""
-  ) as tokenObject;
+  ) as tokenPayload;
   return decoded;
-};
+}
