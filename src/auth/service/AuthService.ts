@@ -1,6 +1,5 @@
 import * as bcrypt from "bcrypt";
 import { Service } from "typedi";
-import { Request, Response } from "express";
 import { ApolloError, AuthenticationError } from "apollo-server-express";
 import { Repository } from "typeorm";
 import { InjectRepository } from "typeorm-typedi-extensions";
@@ -14,7 +13,7 @@ export default class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {}
 
-  public async signUp(name: string, email: string, password: string) {
+  async signUp(name: string, email: string, password: string) {
     const existingUser = await this.userRepository.findOne({ email });
 
     if (existingUser) {
@@ -35,7 +34,7 @@ export default class AuthService {
     return { user: newUser, ...tokenObject };
   }
 
-  public async signIn(email: string, password: string) {
+  async signIn(email: string, password: string) {
     const user: User = (await User.findOne({ email })) as User;
 
     if (!user) {
@@ -50,20 +49,7 @@ export default class AuthService {
     const tokenObject: tokenObject = generateToken(user);
     return {
       message: "Login Success",
-      ...tokenObject
+      ...tokenObject,
     };
-  }
-
-  public async logOut(request: Request, response: Response): Promise<Boolean> {
-    return new Promise((res, rej) =>
-      request.body.session!.destroy((err: any) => {
-      if (err) {
-        return rej(false);
-      }
-
-      response.clearCookie("qid");
-      return res(true);
-    })
-  );
   }
 }

@@ -16,27 +16,19 @@ export class AuthenticationResolver {
   constructor(private readonly authService: AuthService) {}
 
   @Mutation(() => RegisterPayload)
-  async register(@Arg("input") { name, email, password }: RegisterInput) {
+  register(@Arg("input") { name, email, password }: RegisterInput) {
     return this.authService.signUp(name, email, password);
   }
 
   @Mutation(() => LoginPayload)
-  async login(
-    @Arg("input", { nullable: false }) { email, password }: LoginInput
-  ) {
+  login(@Arg("input", { nullable: false }) { email, password }: LoginInput) {
     return this.authService.signIn(email, password);
   }
 
   @Query(() => User, { nullable: true })
   @Authorized()
-  async me(@Ctx() context: Context): Promise<User> {
+  me(@Ctx() context: Context): User {
     const tokenPayload: tokenPayload = decodeToken(context.token as string);
     return tokenPayload.user;
-  }
-
-  @Mutation(() => Boolean)
-  @Authorized()
-  async logout(@Ctx() { req, res }: Context): Promise<Boolean> {
-    return this.authService.logOut(req, res);
   }
 }
