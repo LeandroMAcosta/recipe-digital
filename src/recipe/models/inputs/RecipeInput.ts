@@ -7,4 +7,10 @@ export class RecipeInput {
 
   @Field()
   description!: string;
+
+  @Field()
+  ingredients!: string;
+
+  @Field()
+  categoryId!: number;
 }

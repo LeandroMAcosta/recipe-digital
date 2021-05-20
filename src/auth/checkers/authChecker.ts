@@ -3,7 +3,6 @@ import { ApolloError } from "apollo-server-express";
 import { isExpired } from "../../utils";
 import { Context } from "../../utils/context";
 import { decodeToken } from "../utils/jwt";
-import { tokenPayload } from "../types/tokenPayload";
 
 const authChecker: AuthChecker = ({ context }): boolean => {
   const { token } = context as Context;
@@ -15,8 +14,8 @@ const authChecker: AuthChecker = ({ context }): boolean => {
     );
   }
 
-  const tokenData: tokenPayload = decodeToken(tokenValue);
-  return isExpired(tokenData.exp);
+  const { exp } = decodeToken(tokenValue);
+  return isExpired(exp);
 };
 
 export default authChecker;

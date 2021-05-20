@@ -9,6 +9,7 @@ import authChecker from "./auth/checkers/authChecker";
 import jwt from "express-jwt";
 import { Context } from "./utils";
 import { config } from "dotenv";
+import { decodeToken } from "./auth/utils/jwt";
 
 config();
 
@@ -24,10 +25,13 @@ export async function startServer() {
       container: Container
     }),
     context: ({ req, res }) => {
+      const token = req.headers.authorization || "";
+      const { user } = decodeToken(token);
       const context: Context = {
         req,
         res,
-        token: req.headers.authorization || "",
+        token,
+        user,
       };
       return context;
     },

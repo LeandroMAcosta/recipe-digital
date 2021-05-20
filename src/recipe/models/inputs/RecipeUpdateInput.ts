@@ -7,4 +7,8 @@ export class RecipeUpdateInput {
 
   @Field(() => String, { nullable: true })
   description?: string;
+
+  @Field(() => String, { nullable: true })
+  ingredients?: String;
+
 }

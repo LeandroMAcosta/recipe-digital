@@ -2,7 +2,6 @@ import { Field, ObjectType } from "type-graphql";
 import {
   Entity,
   Column,
-  BaseEntity,
   UpdateDateColumn,
   CreateDateColumn,
   PrimaryGeneratedColumn,
@@ -10,11 +9,12 @@ import {
 
 @ObjectType()
 @Entity()
-export class Recipe extends BaseEntity {
+export class Recipe {
   @Field()
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Field()
   @CreateDateColumn()
   createdAt!: Date;
 
@@ -28,4 +28,8 @@ export class Recipe extends BaseEntity {
   @Field()
   @Column()
   description!: String;
+
+  @Field()
+  @Column()
+  ingredients!: String;
 }

@@ -5,48 +5,60 @@ import {
   Arg,
   Int,
   Authorized,
+  Ctx,
 } from "type-graphql";
 import { Service } from "typedi";
-import { Repository } from "typeorm";
-import { InjectRepository } from "typeorm-typedi-extensions";
+import { Context } from "../../utils";
 import { RecipeInput } from "../models/inputs/RecipeInput";
 import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
 import { Recipe } from "../models/Recipe";
+import RecipeService from "../services/RecipeService";
 
 @Service()
 @Resolver()
 export class RecipeResolver {
-  
-  constructor(
-    @InjectRepository(Recipe) private readonly recipeRepository: Repository<Recipe>
-  ) {}
-  
-  @Authorized()
+  constructor(private readonly recipeService: RecipeService) {}
+
   @Query(() => [Recipe])
-  async getRecipes() {
-    return await this.recipeRepository.find();
+  getRecipes() {
+    return this.recipeService.getRecipes();
   }
 
+  @Authorized()
+  @Query(() => Recipe)
+  getOneRecipes(@Arg("id", () => Int) id: number) {
+    return this.recipeService.getOneRecipe(id);
+  }
+
+  @Authorized()
   @Mutation(() => Recipe)
-  async createRecipe(
-    @Arg("recipeInput", () => RecipeInput) recipeInput: RecipeInput
+  createRecipe(
+    @Ctx() context: Context,
+    @Arg("recipeInput", () => RecipeInput)
+    { name, description, ingredients, categoryId }: RecipeInput
   ) {
-    const newRecipe = Recipe.create(recipeInput);
-    return await this.recipeRepository.save(newRecipe);
+    return this.recipeService.createRecipe(
+      context.user,
+      name,
+      description,
+      ingredients,
+      categoryId
+    );
   }
 
-  @Mutation(() => Boolean)
-  async updateRecipe(
+  @Authorized()
+  @Mutation(() => Recipe)
+  updateRecipe(
     @Arg("id", () => Int) id: number,
     @Arg("fields", () => RecipeUpdateInput) fields: RecipeUpdateInput
   ) {
-    await this.recipeRepository.update(id, fields);
-    return true;
+    return this.recipeService.updateRecipe(id, fields);
   }
 
+  @Authorized()
   @Mutation(() => Boolean)
-  async deleteCategory(@Arg("id", () => Int) id: number) {
-    await Recipe.delete(id);
+  deleteCategory(@Arg("id", () => Int) id: number) {
+    this.recipeService.deleteRecipe(id);
     return true;
   }
 }
