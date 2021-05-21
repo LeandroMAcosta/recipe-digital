@@ -18,7 +18,12 @@ export default class CategoryService {
   }
 
   async getOneCategory(id: number) {
-    return await this.categoryRepository.findOne(id);
+    const category: Category | undefined =
+      await this.categoryRepository.findOne(id);
+    if (!category) {
+      throw new UserInputError("Category not found.");
+    }
+    return category;
   }
 
   async createCategory(owner: User, name: string) {
@@ -55,7 +60,7 @@ export default class CategoryService {
     if (!category) {
       throw new UserInputError("Category not found.");
     }
-
     await this.categoryRepository.delete(id);
+    return true;
   }
 }

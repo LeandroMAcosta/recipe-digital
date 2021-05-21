@@ -24,9 +24,9 @@ export class Category {
   })
   owner!: User;
 
-  @Field(() => [Recipe], {nullable: true, })
-  @OneToMany(() => Recipe, (recipe) => recipe.category, { lazy: true, cascade: true })
-  recipes?: Promise<Recipe[]>;
+  @Field(() => [Recipe], { nullable: true })
+  @OneToMany(() => Recipe, (recipe) => recipe.category)
+  recipes?: Recipe[];
 
   @Field()
   @CreateDateColumn()

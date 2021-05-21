@@ -21,11 +21,16 @@ export class Recipe {
   @ManyToOne(() => User, (user) => user.recipes, {
     eager: true,
     nullable: false,
+    cascade: false,
   })
   owner!: User;
 
   @Field()
-  @ManyToOne(() => Category, (category) => category.recipes, { eager: true })
+  @ManyToOne(() => Category, (category) => category.recipes, {
+    eager: true,
+    cascade: true,
+    onDelete: "CASCADE"
+  })
   category!: Category;
 
   @Field()

@@ -12,7 +12,6 @@ import { Context } from "../../utils";
 import { RecipeInput } from "../models/inputs/RecipeInput";
 import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
 import { Recipe } from "../models/Recipe";
-import { DeleteRecipeResponse } from "../responses/DeleteRecipeResponse";
 import RecipeService from "../services/RecipeService";
 
 @Service()
@@ -63,8 +62,8 @@ export class RecipeResolver {
   }
 
   @Authorized()
-  @Mutation(() => DeleteRecipeResponse)
-  deleteRecipe(@Ctx() context: Context, @Arg("id", () => Int) id: number): void {
-    this.recipeService.deleteRecipe(context.user!, id);
+  @Mutation(() => Boolean)
+  deleteRecipe(@Ctx() context: Context, @Arg("id", () => Int) id: number) {
+    return this.recipeService.deleteRecipe(context.user!, id);
   }
 }

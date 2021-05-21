@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --delay 500ms src/index.ts --exec ts-node"
+    "predev":"fuser -k 3000/tcp && echo 'Terminated' || echo 'Nothing was running on the PORT'",
+    "dev": "nodemon src/index.ts --exec ts-node"
   },
   "repository": {
     "type": "git",

@@ -21,7 +21,11 @@ export default class AuthService {
   }
 
   async getOneRecipe(id: number) {
-    return await this.recipeRepository.findOneOrFail(id);
+    const recipe: Recipe | undefined = await this.recipeRepository.findOne(id);
+    if (!recipe) {
+      throw new UserInputError("Recipe not found.");
+    }
+    return recipe;
   }
 
   async getMyRecipes(user: User) {
@@ -39,10 +43,9 @@ export default class AuthService {
     ingredients: string,
     categoryId: number
   ) {
-    const category: Category | undefined = await this.categoryService.getOneCategory(
-      categoryId
-    );
-    
+    const category: Category | undefined =
+      await this.categoryService.getOneCategory(categoryId);
+
     if (!category) {
       throw new UserInputError("Category not found.");
     }
@@ -54,7 +57,6 @@ export default class AuthService {
       description,
       ingredients,
     });
-
   }
 
   async updateRecipe(user: User, id: number, fields: RecipeUpdateInput) {
@@ -85,5 +87,6 @@ export default class AuthService {
       throw new UserInputError("Recipe not found.");
     }
     await this.recipeRepository.delete(id);
+    return true;
   }
 }
