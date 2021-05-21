@@ -31,7 +31,7 @@ export class Recipe {
   @ManyToOne(() => Category, (category) => category.recipes, {
     eager: true,
     cascade: true,
-    onDelete: "CASCADE"
+    onDelete: "CASCADE",
   })
   category!: Category;
 
@@ -50,10 +50,10 @@ export class Recipe {
   @Column()
   description!: String;
 
-  @Field(() => [Ingredient], { nullable: false })
+  @Field(() => [Ingredient], { nullable: true })
   @OneToMany(() => Ingredient, (ingredient) => ingredient.recipe, {
-    lazy: true,
+    eager: true,
+    cascade: true,
   })
   ingredients!: Ingredient[];
-
 }

@@ -4,9 +4,12 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Category } from "../../category/models/Category";
 import CategoryService from "../../category/services/CategoryService";
+import { Ingredient } from "../../ingredient/models/Ingredient";
 import { IngredientInput } from "../../ingredient/models/inputs/IngredientInput";
+import IngredientService from "../../ingredient/services/IngredientService";
 import { User } from "../../user/models/User";
 import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
+// import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
 import { Recipe } from "../models/Recipe";
 
 @Service()
@@ -14,7 +17,8 @@ export default class RecipeService {
   constructor(
     @InjectRepository(Recipe)
     private readonly recipeRepository: Repository<Recipe>,
-    private readonly categoryService: CategoryService
+    private readonly categoryService: CategoryService,
+    private readonly ingredientService: IngredientService
   ) {}
 
   async getRecipes() {
@@ -41,7 +45,7 @@ export default class RecipeService {
     user: User,
     name: string,
     description: string,
-    ingredients: IngredientInput[],
+    ingredientsInput: IngredientInput[],
     categoryId: number
   ) {
     const category: Category | undefined =
@@ -56,7 +60,7 @@ export default class RecipeService {
       category,
       name,
       description,
-      ingredients,
+      ingredients: ingredientsInput,
     });
   }
 
@@ -70,13 +74,16 @@ export default class RecipeService {
       throw new UserInputError("Recipe not found.");
     }
 
-    // Update isn't returning the updated object, only partially
-    // Find another way to return the updated object and
-    // reduce access to the database.
-    await this.recipeRepository.update(recipe.id, fields);
-    return await this.recipeRepository.findOneOrFail({
-      id: recipe.id,
-    });
+    if (fields.ingredients != null) {
+      const ingredients: IngredientInput[] = fields.ingredients!;
+      delete fields.ingredients;
+      await this.ingredientService.removeFromRecipe(recipe);
+      await this.ingredientService.createFromRecipe(recipe, ingredients);
+    }
+    await this.recipeRepository.update(id, fields);
+
+    return await this.recipeRepository.findOne(id);
+
   }
 
   async deleteRecipe(user: User, id: number) {

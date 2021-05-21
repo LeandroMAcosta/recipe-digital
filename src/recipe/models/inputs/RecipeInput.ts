@@ -12,10 +12,10 @@ export class RecipeInput {
   @Field()
   description!: string;
 
-  @Field({nullable: false })
-  // @IsArray()
-  // @ArrayMinSize(1)
-  ingredients!: IngredientInput;
+  @Field(() => [IngredientInput], {nullable: false })
+  @IsArray()
+  @ArrayMinSize(1)
+  ingredients!: IngredientInput[];
 
   @Field()
   categoryId!: number;

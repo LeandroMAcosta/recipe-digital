@@ -11,6 +11,8 @@ import { Service } from "typedi";
 import { Context } from "../../utils";
 import { RecipeInput } from "../models/inputs/RecipeInput";
 import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
+// import { RecipeInput } from "../models/inputs/RecipeInput";
+// import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
 import { Recipe } from "../models/Recipe";
 import RecipeService from "../services/RecipeService";
 
@@ -39,17 +41,17 @@ export class RecipeResolver {
   @Mutation(() => Recipe)
   createRecipe(
     @Ctx() context: Context,
-    @Arg("recipeInput", () => RecipeInput)
+    @Arg("recipeInput", () => RecipeInput) 
     { name, description, ingredients, categoryId }: RecipeInput
   ) {
-    console.log(ingredients);
-    // return this.recipeService.createRecipe(
-    //   context.user!,
-    //   name,
-    //   description,
-    //   ingredients,
-    //   categoryId
-    // );
+
+    return this.recipeService.createRecipe(
+      context.user!,
+      name,
+      description,
+      ingredients,
+      categoryId
+    );
   }
 
   @Authorized()
