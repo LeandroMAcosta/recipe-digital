@@ -18,15 +18,14 @@ export default class CategoryService {
   }
 
   async getOneCategory(id: number) {
-    return await this.categoryRepository.findOneOrFail(id);
+    return await this.categoryRepository.findOne(id);
   }
 
   async createCategory(owner: User, name: string) {
-    const newCategory: Category = this.categoryRepository.create({
+    return await this.categoryRepository.save({
       owner,
       name,
     });
-    return await this.categoryRepository.save(newCategory);
   }
 
   async updateCategory(user: User, id: number, fields: CategoryUpdateInput) {
@@ -40,7 +39,10 @@ export default class CategoryService {
       throw new UserInputError("Category not found.");
     }
 
-    return await this.categoryRepository.update(id, fields);
+    return await this.categoryRepository.save({
+      id,
+      ...fields,
+    });
   }
 
   async deleteCategory(user: User, id: number) {
@@ -54,6 +56,6 @@ export default class CategoryService {
       throw new UserInputError("Category not found.");
     }
 
-    return await this.categoryRepository.delete(id);
+    await this.categoryRepository.delete(id);
   }
 }

@@ -2,7 +2,7 @@ import { Field, ObjectType } from "type-graphql";
 import { User } from "../../user/models/User";
 
 @ObjectType()
-export class RegisterPayload {
+export class RegisterResponse {
   @Field(() => User, { nullable: true })
   user?: User;
 
@@ -11,8 +11,4 @@ export class RegisterPayload {
 
   @Field({ nullable: true })
   expiration?: number;
-
-  @Field({ nullable: true })
-  message?: string;
-
 }

@@ -1,3 +1,4 @@
+import { UserInputError } from "apollo-server-express";
 import { Service } from "typedi";
 import { Repository } from "typeorm";
 import { InjectRepository } from "typeorm-typedi-extensions";
@@ -38,12 +39,15 @@ export default class AuthService {
     ingredients: string,
     categoryId: number
   ) {
-
-    const category: Category = await this.categoryService.getOneCategory(
+    const category: Category | undefined = await this.categoryService.getOneCategory(
       categoryId
     );
+    
+    if (!category) {
+      throw new UserInputError("Category not found.");
+    }
 
-    const newRecipe: Recipe = this.recipeRepository.create({
+    return await this.recipeRepository.save({
       owner: user,
       category,
       name,
@@ -51,25 +55,35 @@ export default class AuthService {
       ingredients,
     });
 
-    return await this.recipeRepository.save(newRecipe);
   }
 
-  // TODO: check ownership
   async updateRecipe(user: User, id: number, fields: RecipeUpdateInput) {
-    return await this.recipeRepository.update(
-      {
-        id,
-        owner: { id: user.id },
-      },
-      fields
-    );
-  }
-
-  // TODO: check ownership
-  async deleteRecipe(user: User, id: number) {
-    return await this.recipeRepository.delete({
+    let recipe: Recipe | undefined = await this.recipeRepository.findOne({
       id,
       owner: { id: user.id },
     });
+
+    if (!recipe) {
+      throw new UserInputError("Recipe not found.");
+    }
+
+    // Update isn't returning the updated object, only partially
+    // Find another way to return the updated object and
+    // reduce access to the database.
+    await this.recipeRepository.update(recipe.id, fields);
+    return await this.recipeRepository.findOneOrFail({
+      id: recipe.id,
+    });
+  }
+
+  async deleteRecipe(user: User, id: number) {
+    const recipe: Recipe | undefined = await this.recipeRepository.findOne({
+      id,
+      owner: { id: user.id },
+    });
+    if (!recipe) {
+      throw new UserInputError("Recipe not found.");
+    }
+    await this.recipeRepository.delete(id);
   }
 }

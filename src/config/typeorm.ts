@@ -14,6 +14,7 @@ export async function connect() {
     password: "r3c1p3",
     entities: [path.join(__dirname, "../**/models/**.ts")],
     synchronize: true,
+    logging: false,
   });
   console.log("DB conected");
 }

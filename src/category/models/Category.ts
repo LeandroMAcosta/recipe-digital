@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import {
   Entity,
   UpdateDateColumn,
@@ -14,15 +14,19 @@ import { User } from "../../user/models/User";
 @ObjectType()
 @Entity()
 export class Category {
-  @Field()
+  @Field(() => ID)
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User, user => user.categories)
+  @Field()
+  @ManyToOne(() => User, (user) => user.categories, {
+    nullable: false,
+  })
   owner!: User;
 
-  @OneToMany(() => Recipe, recipe => recipe.category)
-  recipes?: Recipe[];
+  @Field(() => [Recipe], {nullable: true, })
+  @OneToMany(() => Recipe, (recipe) => recipe.category, { lazy: true, cascade: true })
+  recipes?: Promise<Recipe[]>;
 
   @Field()
   @CreateDateColumn()

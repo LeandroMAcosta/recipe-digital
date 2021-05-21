@@ -1,6 +1,6 @@
 import * as bcrypt from "bcrypt";
 import { Service } from "typedi";
-import { ApolloError, AuthenticationError } from "apollo-server-express";
+import { AuthenticationError, UserInputError } from "apollo-server-express";
 import { Repository } from "typeorm";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { User } from "../../user/models/User";
@@ -14,29 +14,28 @@ export default class AuthService {
   ) {}
 
   async signUp(name: string, email: string, password: string) {
-    const existingUser = await this.userRepository.findOne({ email });
+    const existingUser: User | undefined = await this.userRepository.findOne({
+      email,
+    });
 
     if (existingUser) {
-      return new ApolloError("Email already in use.");
+      throw new UserInputError("Email already in use.");
     }
 
     const salt = bcrypt.genSaltSync(15);
     const hashedPassword = bcrypt.hashSync(password, salt);
-
-    const newUser = await this.userRepository.create({
+    const newUser: User = await this.userRepository.save({
       name,
       email,
       password: hashedPassword,
     });
 
     const tokenObject: tokenObject = generateToken(newUser);
-
     return { user: newUser, ...tokenObject };
   }
 
   async signIn(email: string, password: string) {
     const user: User | undefined = await this.userRepository.findOne({ email });
-
     if (!user) {
       return new AuthenticationError("User does not exist.");
     }

@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import {
   Entity,
   Column,
@@ -13,14 +13,19 @@ import { User } from "../../user/models/User";
 @ObjectType()
 @Entity()
 export class Recipe {
-  @Field()
+  @Field(() => ID)
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User, user => user.recipes)
+  @Field()
+  @ManyToOne(() => User, (user) => user.recipes, {
+    eager: true,
+    nullable: false,
+  })
   owner!: User;
 
-  @ManyToOne(() => Category, category => category.recipes)
+  @Field()
+  @ManyToOne(() => Category, (category) => category.recipes, { eager: true })
   category!: Category;
 
   @Field()

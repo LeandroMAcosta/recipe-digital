@@ -54,6 +54,6 @@ export class CategoryResolver {
   @Authorized()
   @Mutation(() => Boolean)
   deleteCategory(@Ctx() context: Context, @Arg("id", () => Int) id: number) {
-    this.categoryService.deleteCategory(context.user!, id);
+    return this.categoryService.deleteCategory(context.user!, id);
   }
 }
