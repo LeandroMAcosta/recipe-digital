@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Category } from "../../category/models/Category";
 import CategoryService from "../../category/services/CategoryService";
+import { IngredientInput } from "../../ingredient/models/inputs/IngredientInput";
 import { User } from "../../user/models/User";
 import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
 import { Recipe } from "../models/Recipe";
@@ -40,7 +41,7 @@ export default class RecipeService {
     user: User,
     name: string,
     description: string,
-    ingredients: string,
+    ingredients: IngredientInput[],
     categoryId: number
   ) {
     const category: Category | undefined =

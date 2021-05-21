@@ -1,15 +1,16 @@
 import { Field, InputType } from "type-graphql";
+import { Ingredient } from "../../../ingredient/models/Ingredient";
+import { Recipe } from "../Recipe";
 
 @InputType()
-// TODO implements Partial<Recipe>
-export class RecipeUpdateInput {
+export class RecipeUpdateInput implements Partial<Recipe>{
   @Field(() => String, { nullable: true })
   name?: string;
 
   @Field(() => String, { nullable: true })
   description?: string;
 
-  @Field(() => String, { nullable: true })
-  ingredients?: String;
+  @Field(() => Ingredient, { nullable: true })
+  ingredients?: Ingredient[];
 
 }

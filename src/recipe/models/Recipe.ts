@@ -6,8 +6,10 @@ import {
   CreateDateColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
+  OneToMany,
 } from "typeorm";
 import { Category } from "../../category/models/Category";
+import { Ingredient } from "../../ingredient/models/Ingredient";
 import { User } from "../../user/models/User";
 
 @ObjectType()
@@ -48,7 +50,10 @@ export class Recipe {
   @Column()
   description!: String;
 
-  @Field()
-  @Column()
-  ingredients!: String;
+  @Field(() => [Ingredient], { nullable: false })
+  @OneToMany(() => Ingredient, (ingredient) => ingredient.recipe, {
+    lazy: true,
+  })
+  ingredients!: Ingredient[];
+
 }

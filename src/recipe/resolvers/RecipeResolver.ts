@@ -42,13 +42,14 @@ export class RecipeResolver {
     @Arg("recipeInput", () => RecipeInput)
     { name, description, ingredients, categoryId }: RecipeInput
   ) {
-    return this.recipeService.createRecipe(
-      context.user!,
-      name,
-      description,
-      ingredients,
-      categoryId
-    );
+    console.log(ingredients);
+    // return this.recipeService.createRecipe(
+    //   context.user!,
+    //   name,
+    //   description,
+    //   ingredients,
+    //   categoryId
+    // );
   }
 
   @Authorized()

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "predev":"fuser -k 3000/tcp && echo 'Terminated' || echo 'Nothing was running on the PORT'",
+    "predev": "fuser -k 3000/tcp && echo 'Terminated' || echo 'Nothing was running on the PORT'",
     "dev": "nodemon src/index.ts --exec ts-node"
   },
   "repository": {
@@ -21,6 +21,7 @@
   "dependencies": {
     "apollo-server-express": "^2.24.1",
     "bcrypt": "^5.0.1",
+    "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^8.6.0",
     "express": "^4.17.1",
