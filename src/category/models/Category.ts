@@ -25,7 +25,7 @@ export class Category {
   })
   owner!: User;
 
-  @Field(() => [Recipe], { nullable: true })
+  @Field(() => [Recipe])
   @OneToMany(() => Recipe, (recipe) => recipe.category, {
     lazy: true,
   })

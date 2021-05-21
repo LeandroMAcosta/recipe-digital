@@ -27,14 +27,14 @@ export class Recipe {
   })
   owner!: User;
 
-  @Field()
+  @Field(() => Category)
   @ManyToOne(() => Category, (category) => category.recipes, {
-    eager: true,
+    lazy: true,
     cascade: true,
     onDelete: "CASCADE",
   })
   category!: Category;
-
+  
   @Field()
   @CreateDateColumn()
   createdAt!: Date;
@@ -52,7 +52,7 @@ export class Recipe {
 
   @Field(() => [Ingredient], { nullable: true })
   @OneToMany(() => Ingredient, (ingredient) => ingredient.recipe, {
-    eager: true,
+    lazy: true,
     cascade: true,
   })
   ingredients!: Ingredient[];

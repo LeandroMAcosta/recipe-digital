@@ -44,10 +44,11 @@ export default class CategoryService {
       throw new UserInputError("Category not found.");
     }
 
-    return await this.categoryRepository.save({
+    await this.categoryRepository.save({
       id,
       ...fields,
     });
+    return this.categoryRepository.findOne(id);
   }
 
   async deleteCategory(user: User, id: number) {
