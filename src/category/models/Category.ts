@@ -20,12 +20,15 @@ export class Category {
 
   @Field()
   @ManyToOne(() => User, (user) => user.categories, {
+    eager: true,
     nullable: false,
   })
   owner!: User;
 
   @Field(() => [Recipe], { nullable: true })
-  @OneToMany(() => Recipe, (recipe) => recipe.category)
+  @OneToMany(() => Recipe, (recipe) => recipe.category, {
+    lazy: true,
+  })
   recipes?: Recipe[];
 
   @Field()
