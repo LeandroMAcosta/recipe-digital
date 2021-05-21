@@ -1,0 +1,33 @@
+import { Field, ID, ObjectType } from "type-graphql";
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from "typeorm";
+import { Recipe } from "../../recipe/models/Recipe";
+
+@ObjectType()
+@Entity()
+export class Ingredient {
+  @Field(() => ID)
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @Field()
+  @Column()
+  item!: string;
+
+  @Field()
+  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients, {
+    eager: true,
+    nullable: false,
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  recipe!: Recipe;
+
+  @Field()
+  @Column()
+  quantity!: number;
+
+  // It should be an enum kg | g | count etc. 
+  @Field()
+  @Column()
+  unit!: string;
+}
