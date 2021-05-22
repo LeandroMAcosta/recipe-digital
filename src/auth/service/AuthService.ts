@@ -37,7 +37,7 @@ export default class AuthService {
   async signIn(email: string, password: string) {
     const user: User | undefined = await this.userRepository.findOne({ email });
     if (!user) {
-      return new AuthenticationError("User does not exist.");
+      return new AuthenticationError("Invalid credentials.");
     }
 
     const isAuthenticated = bcrypt.compareSync(password, user.password);

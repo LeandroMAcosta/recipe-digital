@@ -23,13 +23,11 @@ export class RecipeResolver {
   getRecipes(
     @Arg("name", () => String, { nullable: true }) name: string,
     @Arg("categoryId", () => Int, { nullable: true }) categoryId: number,
-    @Arg("categoryName", () => String, { nullable: true }) categoryName: string,
     @Arg("ingredient", () => String, { nullable: true }) ingredient: string
   ) {
     return this.recipeService.getRecipes({
       name,
       categoryId,
-      categoryName,
       ingredient,
     });
   }

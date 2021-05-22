@@ -20,8 +20,8 @@ export class CategoryResolver {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Query(() => [Category])
-  getCategories() {
-    return this.categoryService.getCategories();
+  getCategories(@Arg("name", () => String, { nullable: true }) name: string) {
+    return this.categoryService.getCategories({name});
   }
 
   @Query(() => Category)

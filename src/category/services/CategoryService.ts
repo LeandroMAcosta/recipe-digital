@@ -1,10 +1,11 @@
 import { Service } from "typedi";
-import { Repository } from "typeorm";
+import { Like, Repository } from "typeorm";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { User } from "../../user/models/User";
 import { CategoryUpdateInput } from "../models/inputs/CategoryUpdateInput";
 import { Category } from "../models/Category";
 import { UserInputError } from "apollo-server-express";
+import { CategoryFilterArgs } from "../args/CategoryFilterArgs";
 
 @Service()
 export default class CategoryService {
@@ -13,8 +14,16 @@ export default class CategoryService {
     private readonly categoryRepository: Repository<Category>
   ) {}
 
-  async getCategories() {
-    return await this.categoryRepository.find();
+  async getCategories({ name }: CategoryFilterArgs) {
+    if (name != undefined) {
+      return await this.categoryRepository.find({
+        where: {
+          name: Like("%" + name + "%"),
+        },
+      });
+    } else {
+      return await this.categoryRepository.find();
+    }
   }
 
   async getOneCategory(id: number) {
