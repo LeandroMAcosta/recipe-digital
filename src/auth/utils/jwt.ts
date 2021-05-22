@@ -15,7 +15,7 @@ export function generateToken(user: User): tokenObject {
 
   const token: string = jwt.sign(
     tokenPayload,
-    process.env.JWT_PRIVATE_KEY || ""
+    process.env.SESSION_PRIVATE_KEY || ""
   );
   return { token, expiration };
 }
@@ -43,7 +43,7 @@ export function getTokenFromHeader(
 export function decodeToken(token: string): tokenPayload {
   const tokenPayload = jwt.verify(
     token,
-    process.env.JWT_PRIVATE_KEY || ""
+    process.env.SESSION_PRIVATE_KEY || ""
   ) as tokenPayload;
   return tokenPayload;
 }

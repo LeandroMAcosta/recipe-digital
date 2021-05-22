@@ -8,9 +8,9 @@ export async function connect() {
   await createConnection({
     type: "mysql",
     host: process.env.HOST || "localhost",
-    database: process.env.DB || "recipe_db",
-    username: process.env.DB_USER || "recipe",
-    password: process.env.DB_PASS  || "r3c1p3",
+    database: process.env.DB_NAME || "recipe_db",
+    username: process.env.DB_USERNAME || "recipe",
+    password: process.env.DB_PASSWORD || "r3c1p3",
     entities: [path.join(__dirname, "../**/models/**.ts")],
     synchronize: true,
     logging: false,
