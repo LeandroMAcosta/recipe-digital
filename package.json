@@ -2,8 +2,14 @@
   "name": "recipe-digital",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node ./dist/index.js",
     "predev": "fuser -k 3000/tcp && echo 'Terminated' || echo 'Nothing was running on the PORT'",
     "dev": "nodemon src/index.ts --exec ts-node"
   },
