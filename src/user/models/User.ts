@@ -10,9 +10,11 @@ export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Field(() => [Category])
   @OneToMany(() => Category, (category) => category.owner)
   categories!: Promise<Category[]>;
 
+  @Field(() => [Recipe])
   @OneToMany(() => Recipe, (recipe) => recipe.owner, {
     cascade: true,
   })

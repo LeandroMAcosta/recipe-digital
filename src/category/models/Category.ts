@@ -7,7 +7,10 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  JoinTable,
+  JoinColumn,
 } from "typeorm";
+import { JoinAttribute } from "typeorm/query-builder/JoinAttribute";
 import { Recipe } from "../../recipe/models/Recipe";
 import { User } from "../../user/models/User";
 
@@ -17,6 +20,11 @@ export class Category {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   id!: number;
+
+  @Field()
+  @Column()
+  @JoinColumn()
+  name!: String;
 
   @Field()
   @ManyToOne(() => User, (user) => user.categories, {
@@ -29,6 +37,7 @@ export class Category {
   @OneToMany(() => Recipe, (recipe) => recipe.category, {
     lazy: true,
   })
+  @JoinColumn({ name: 'recipe_id' })
   recipes?: Recipe[];
 
   @Field()
@@ -37,8 +46,4 @@ export class Category {
 
   @UpdateDateColumn()
   updatedAt!: Date;
-
-  @Field()
-  @Column()
-  name!: String;
 }

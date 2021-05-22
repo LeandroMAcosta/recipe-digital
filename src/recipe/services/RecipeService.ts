@@ -1,16 +1,17 @@
 import { UserInputError } from "apollo-server-express";
 import { Service } from "typedi";
-import { Repository } from "typeorm";
+import { Any, In, Like, QueryBuilder, Raw, Repository } from "typeorm";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Category } from "../../category/models/Category";
 import CategoryService from "../../category/services/CategoryService";
-import { Ingredient } from "../../ingredient/models/Ingredient";
 import { IngredientInput } from "../../ingredient/models/inputs/IngredientInput";
 import IngredientService from "../../ingredient/services/IngredientService";
 import { User } from "../../user/models/User";
+import { RecipeFilterArgs } from "../args/RecipeFilterArgs";
 import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
-// import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
 import { Recipe } from "../models/Recipe";
+import { removeUndefined } from "../../utils/removeUndefined";
+import { Field } from "type-graphql";
 
 @Service()
 export default class RecipeService {
@@ -21,8 +22,80 @@ export default class RecipeService {
     private readonly ingredientService: IngredientService
   ) {}
 
-  async getRecipes() {
-    return await this.recipeRepository.find();
+  private buildQuery({
+    name,
+    categoryId,
+    categoryName,
+    ingredient,
+  }: RecipeFilterArgs) {
+    let query = {
+      name: name === undefined ? undefined : Like("%" + name + "%"),
+      category: {
+        id: categoryId,
+        name:
+          categoryName === undefined
+            ? undefined
+            : Like("%" + categoryName + "%"),
+      },
+      id: Raw(
+        (alias) =>
+          `${alias} IN (SELECT recipe_id FROM ingredient i WHERE i.item LIKE "%${ingredient}%")`
+      ),
+    };
+
+    return query;
+  }
+
+  async getRecipes(filters: RecipeFilterArgs) {
+    const query = this.buildQuery(filters);
+    console.log(query);
+    removeUndefined(query);
+    console.log(query);
+
+    // let selectQueryBuilder = await this.recipeRepository
+    //   .createQueryBuilder("recipe")
+    //   .innerJoinAndSelect("recipe.category", "category");
+    
+    // if (filters.categoryId) {
+    //   selectQueryBuilder = selectQueryBuilder.where(`category.id = ${filters.categoryId}`);
+    // }
+    // categoryName,
+    
+    // if (filters.categoryName) {
+    //   selectQueryBuilder = selectQueryBuilder.where(`category.name = ${filters.categoryName}`);
+    // }
+
+    // if (filters.name) {
+    //   selectQueryBuilder = selectQueryBuilder.where(`name = ${filters.name}`);
+    // }
+
+    // if (filters.ingredient) {
+    //   selectQueryBuilder = selectQueryBuilder.where(`id IN (SELECT id FROM ingredient i WHERE i.item LIKE %${filters.ingredient}%)`);
+    // }
+
+    
+    // const result = await getConnection()
+    //   .createQueryBuilder('user')
+    //   .leftJoinAndSelect('user.linkedSheep', 'linkedSheep')
+    //   .leftJoinAndSelect('user.linkedCow', 'linkedCow')
+    //   .where('user.linkedSheep = :sheepId', { sheepId })
+    //   .andWhere('user.linkedCow = :cowId', { cowId });
+
+    const result = await this.recipeRepository.find({
+      relations: ['category', 'category.recipes'],
+      where: {
+        // id: Raw((alias) => `${alias} IN (SELECT recipe_id FROM ingredient i WHERE i.item LIKE "%${filters.ingredient}%")`),
+        category: {
+          name: 
+        }
+      }
+    });
+
+    // name: Like(`%${filters.categoryName}%`)
+    // ...query
+    // id: Raw((alias) => `${alias} IN (SELECT recipe_id FROM ingredient i WHERE i.item LIKE "%${filters.ingredient}%")`),
+    // return selectQueryBuilder.getMany();
+    return result;
   }
 
   async getOneRecipe(id: number) {
@@ -81,9 +154,7 @@ export default class RecipeService {
       await this.ingredientService.createFromRecipe(recipe, ingredients);
     }
     await this.recipeRepository.update(id, fields);
-
     return await this.recipeRepository.findOne(id);
-
   }
 
   async deleteRecipe(user: User, id: number) {

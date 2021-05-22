@@ -7,6 +7,8 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  JoinTable,
+  JoinColumn,
 } from "typeorm";
 import { Category } from "../../category/models/Category";
 import { Ingredient } from "../../ingredient/models/Ingredient";
@@ -29,7 +31,8 @@ export class Recipe {
 
   @Field(() => Category)
   @ManyToOne(() => Category, (category) => category.recipes, {
-    lazy: true,
+    // lazy: false,
+    eager: true,
     cascade: true,
     onDelete: "CASCADE",
   })
@@ -52,8 +55,8 @@ export class Recipe {
 
   @Field(() => [Ingredient], { nullable: true })
   @OneToMany(() => Ingredient, (ingredient) => ingredient.recipe, {
-    lazy: true,
-    cascade: true,
+    eager: true,
+    cascade: ["insert"],
   })
   ingredients!: Ingredient[];
 }

@@ -6,13 +6,12 @@ import {
   Int,
   Authorized,
   Ctx,
+  Args,
 } from "type-graphql";
 import { Service } from "typedi";
 import { Context } from "../../utils";
 import { RecipeInput } from "../models/inputs/RecipeInput";
 import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
-// import { RecipeInput } from "../models/inputs/RecipeInput";
-// import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
 import { Recipe } from "../models/Recipe";
 import RecipeService from "../services/RecipeService";
 
@@ -22,8 +21,18 @@ export class RecipeResolver {
   constructor(private readonly recipeService: RecipeService) {}
 
   @Query(() => [Recipe])
-  getRecipes() {
-    return this.recipeService.getRecipes();
+  getRecipes(
+    @Arg("name", () => String, { nullable: true }) name: string,
+    @Arg("categoryId", () => Int, { nullable: true }) categoryId: number,
+    @Arg("categoryName", () => String, { nullable: true }) categoryName: string,
+    @Arg("ingredient", () => String, { nullable: true }) ingredient: string
+  ) {
+    return this.recipeService.getRecipes({
+      name,
+      categoryId,
+      categoryName,
+      ingredient,
+    });
   }
 
   @Query(() => Recipe)
@@ -41,10 +50,9 @@ export class RecipeResolver {
   @Mutation(() => Recipe)
   createRecipe(
     @Ctx() context: Context,
-    @Arg("recipeInput", () => RecipeInput) 
+    @Arg("recipeInput", () => RecipeInput)
     { name, description, ingredients, categoryId }: RecipeInput
   ) {
-
     return this.recipeService.createRecipe(
       context.user!,
       name,

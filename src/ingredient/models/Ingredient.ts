@@ -14,7 +14,11 @@ export class Ingredient {
   item!: string;
 
   @Field(() => Recipe)
-  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients, { nullable: false })
+  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients, { 
+    nullable: false,
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   @JoinColumn({name: 'recipe_id'})
   recipe!: Recipe;
 
