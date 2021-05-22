@@ -7,9 +7,11 @@
     "node": "14.x"
   },
   "scripts": {
-    "build": "tsc",
-    "prestart": "npm run build",
-    "start": "node ./dist/index.js",
+    "start": "node dist/index.js",
+    "postinstall": "tsc",
+    "watch-node": "nodemon dist/index.js",
+    "watch-ts": "tsc -w",
+    "deploy": "git add . && git commit -m Heroku && git push heroku master",
     "predev": "fuser -k 3000/tcp && echo 'Terminated' || echo 'Nothing was running on the PORT'",
     "dev": "nodemon src/index.ts --exec ts-node"
   },
