@@ -10,13 +10,14 @@ import { Context } from "./utils";
 import { config } from "dotenv";
 import { decodeToken, getTokenFromHeader } from "./auth/utils/jwt";
 import { User } from "./user/models/User";
+import { GRAPHQL_PATH } from "./config/constants";
 
 config();
 
 export async function startServer() {
   const app = express();
   // TODO move to constants.ts or dotenv
-  const path = "/graphql";
+  const path = GRAPHQL_PATH;
 
   const server = new ApolloServer({
     schema: await buildSchema({
