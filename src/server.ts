@@ -16,7 +16,6 @@ config();
 
 export async function startServer() {
   const app = express();
-  // TODO move to constants.ts or dotenv
   const path = GRAPHQL_PATH;
 
   const server = new ApolloServer({
