@@ -1,6 +1,5 @@
 import { MaxLength } from "class-validator";
 import { Field, InputType } from "type-graphql";
-import { Ingredient } from "../Ingredient";
 
 @InputType()
 export class IngredientInput {

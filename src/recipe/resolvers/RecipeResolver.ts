@@ -6,7 +6,6 @@ import {
   Int,
   Authorized,
   Ctx,
-  Args,
 } from "type-graphql";
 import { Service } from "typedi";
 import { Context } from "../../utils";

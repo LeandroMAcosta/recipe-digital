@@ -7,10 +7,8 @@ import {
   Column,
   ManyToOne,
   OneToMany,
-  JoinTable,
   JoinColumn,
 } from "typeorm";
-import { JoinAttribute } from "typeorm/query-builder/JoinAttribute";
 import { Recipe } from "../../recipe/models/Recipe";
 import { User } from "../../user/models/User";
 

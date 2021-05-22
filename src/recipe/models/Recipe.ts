@@ -7,8 +7,6 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
-  JoinTable,
-  JoinColumn,
 } from "typeorm";
 import { Category } from "../../category/models/Category";
 import { Ingredient } from "../../ingredient/models/Ingredient";

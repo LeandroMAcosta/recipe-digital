@@ -22,7 +22,7 @@ export default class RecipeService {
     private readonly ingredientService: IngredientService
   ) {}
 
-  private buildQuery({ name, categoryId, ingredient }: RecipeFilterArgs) {
+  private buildQuery({ name, categoryId }: RecipeFilterArgs) {
     let query = {
       name: name === undefined ? undefined : Like("%" + name + "%"),
       category: {
