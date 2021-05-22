@@ -11,7 +11,7 @@
 - MySql
 - TypeDI
 
-## Directions
+## Usage
 
 1. Clone this repo: `git clone https://github.com/LeandroMAcosta/recipe-digital`
 2. Change directory: `cd recipe-digital`
