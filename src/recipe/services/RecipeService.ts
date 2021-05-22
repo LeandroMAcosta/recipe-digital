@@ -1,6 +1,6 @@
 import { UserInputError } from "apollo-server-express";
 import { Service } from "typedi";
-import { Any, In, Like, QueryBuilder, Raw, Repository } from "typeorm";
+import { Like, Repository } from "typeorm";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Category } from "../../category/models/Category";
 import CategoryService from "../../category/services/CategoryService";
@@ -11,7 +11,7 @@ import { RecipeFilterArgs } from "../args/RecipeFilterArgs";
 import { RecipeUpdateInput } from "../models/inputs/RecipeUpdateInput";
 import { Recipe } from "../models/Recipe";
 import { removeUndefined } from "../../utils/removeUndefined";
-import { Field } from "type-graphql";
+import { Ingredient } from "../../ingredient/models/Ingredient";
 
 @Service()
 export default class RecipeService {
@@ -22,80 +22,36 @@ export default class RecipeService {
     private readonly ingredientService: IngredientService
   ) {}
 
-  private buildQuery({
-    name,
-    categoryId,
-    categoryName,
-    ingredient,
-  }: RecipeFilterArgs) {
+  private buildQuery({ name, categoryId, ingredient }: RecipeFilterArgs) {
     let query = {
       name: name === undefined ? undefined : Like("%" + name + "%"),
       category: {
         id: categoryId,
-        name:
-          categoryName === undefined
-            ? undefined
-            : Like("%" + categoryName + "%"),
       },
-      id: Raw(
-        (alias) =>
-          `${alias} IN (SELECT recipe_id FROM ingredient i WHERE i.item LIKE "%${ingredient}%")`
-      ),
     };
 
-    return query;
+    return removeUndefined(query);
   }
 
   async getRecipes(filters: RecipeFilterArgs) {
     const query = this.buildQuery(filters);
-    console.log(query);
-    removeUndefined(query);
-    console.log(query);
-
-    // let selectQueryBuilder = await this.recipeRepository
-    //   .createQueryBuilder("recipe")
-    //   .innerJoinAndSelect("recipe.category", "category");
-    
-    // if (filters.categoryId) {
-    //   selectQueryBuilder = selectQueryBuilder.where(`category.id = ${filters.categoryId}`);
-    // }
-    // categoryName,
-    
-    // if (filters.categoryName) {
-    //   selectQueryBuilder = selectQueryBuilder.where(`category.name = ${filters.categoryName}`);
-    // }
-
-    // if (filters.name) {
-    //   selectQueryBuilder = selectQueryBuilder.where(`name = ${filters.name}`);
-    // }
-
-    // if (filters.ingredient) {
-    //   selectQueryBuilder = selectQueryBuilder.where(`id IN (SELECT id FROM ingredient i WHERE i.item LIKE %${filters.ingredient}%)`);
-    // }
-
-    
-    // const result = await getConnection()
-    //   .createQueryBuilder('user')
-    //   .leftJoinAndSelect('user.linkedSheep', 'linkedSheep')
-    //   .leftJoinAndSelect('user.linkedCow', 'linkedCow')
-    //   .where('user.linkedSheep = :sheepId', { sheepId })
-    //   .andWhere('user.linkedCow = :cowId', { cowId });
-
-    const result = await this.recipeRepository.find({
-      relations: ['category', 'category.recipes'],
+    let result = await this.recipeRepository.find({
+      relations: ["category", "category.recipes"],
       where: {
-        // id: Raw((alias) => `${alias} IN (SELECT recipe_id FROM ingredient i WHERE i.item LIKE "%${filters.ingredient}%")`),
-        category: {
-          name: 
-        }
-      }
+        ...query,
+      },
     });
 
-    // name: Like(`%${filters.categoryName}%`)
-    // ...query
-    // id: Raw((alias) => `${alias} IN (SELECT recipe_id FROM ingredient i WHERE i.item LIKE "%${filters.ingredient}%")`),
-    // return selectQueryBuilder.getMany();
-    return result;
+    // Not the best solution, bad for RAM, this issue explain what happened to me
+    // when I tried to filter with Repository/QueryBuilder: https://github.com/typeorm/typeorm/issues/4396
+    if (filters.ingredient === undefined) {
+      return result;
+    }
+    return result.filter((recipe) => {
+      return recipe.ingredients.some((ingredient: Ingredient) => {
+        return ingredient.item == filters.ingredient;
+      });
+    });
   }
 
   async getOneRecipe(id: number) {

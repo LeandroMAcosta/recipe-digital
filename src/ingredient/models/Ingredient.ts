@@ -19,7 +19,6 @@ export class Ingredient {
     cascade: true,
     onDelete: "CASCADE",
   })
-  @JoinColumn({name: 'recipe_id'})
   recipe!: Recipe;
 
   @Field()
