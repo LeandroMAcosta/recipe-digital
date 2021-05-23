@@ -32,3 +32,62 @@ Also you can try it on [heroku](https://recipe-digital-challenge.herokuapp.com/g
 | DB_NAME              | recipe_db     |
 | DB_USERNAME          | recipe        |
 | DB_PASSWORD          | r3c1p3        |
+
+
+## Some basic queries you can try
+
+
+### Auth Mutations
+
+
+#### Register
+```
+mutation {
+  signUp(input:{
+  	name:"your name",
+    email:"my@email.com"
+    password:"super-secret-password"
+  }) {
+		user {
+      id
+    }
+    token
+  }
+}
+```
+
+#### Login
+```
+mutation {
+  login(input:{
+  	email:"my@email.com"
+    password:"super-secret-password"
+  }) {
+    token
+  }
+}
+```
+
+You can copy the token in the response and put it in the headers for some of the upcoming queries / mutations
+
+
+```
+{
+  "authorization":"Bearer <token>"
+}
+```
+
+---
+
+### Category Mutations/Queries
+
+```
+mutation{
+  createCategory(categoryInput:{
+  	name:"ensaladas"
+  }) {
+    id
+    name
+  }
+}
+```
