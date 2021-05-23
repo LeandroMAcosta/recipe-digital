@@ -41,7 +41,7 @@ Also you can try it on [heroku](https://recipe-digital-challenge.herokuapp.com/g
 
 
 #### Register
-```
+```javascript
 mutation {
   signUp(input:{
     name:"your name",
@@ -57,7 +57,7 @@ mutation {
 ```
 
 #### Login
-```
+```javascript
 mutation {
   login(input:{
     email:"my@email.com"
@@ -71,7 +71,7 @@ mutation {
 You can copy the token in the response and put it in the headers for some of the upcoming queries / mutations
 
 
-```
+```json
 {
   "authorization":"Bearer <token>"
 }
@@ -82,7 +82,7 @@ You can copy the token in the response and put it in the headers for some of the
 ### Category Mutations/Queries
 
 #### Create a category
-```
+```javascript
 mutation{
   createCategory(categoryInput:{
     name:"ensaladas"
@@ -98,7 +98,7 @@ mutation{
 #### Create a recipe
 
 > Replace categoryId with the id that returned the previous mutation. 
-```
+```javascript
 mutation{
   createRecipe(recipeInput:{
     name:"ensalada rusa ",
@@ -137,7 +137,7 @@ mutation{
 
 #### Get your Recipes
 
-```
+```javascript
 {
   getMyRecipes {
     id
