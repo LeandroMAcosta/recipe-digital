@@ -20,6 +20,8 @@
 5. Run the application: `npm run dev`
 6. Navigate to `http://localhost:3000/graphql`
 
+Also you can try it on [heroku](https://recipe-digital-challenge.herokuapp.com/graphql) 
+
 ## Configuration
 
 | Environment variable | Default value |
