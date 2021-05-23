@@ -22,7 +22,7 @@ export async function startServer() {
     schema: await buildSchema({
       resolvers: [RecipeResolver, CategoryResolver, AuthenticationResolver],
       authChecker: authChecker,
-      container: Container
+      container: Container,
     }),
     context: ({ req, res }) => {
       const token = getTokenFromHeader(req.headers);
@@ -37,6 +37,8 @@ export async function startServer() {
       };
       return context;
     },
+    introspection: true,
+    playground: true
   });
 
   server.applyMiddleware({ app, path });
