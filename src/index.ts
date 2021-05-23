@@ -8,7 +8,7 @@ async function main() {
   app.listen({
     port: process.env.PORT || 3000
   });
-  console.log("Start server on port ", process.env.PORT);
+  console.log("Start server on port ", process.env.PORT || 3000);
 }
 
 main();
