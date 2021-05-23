@@ -92,7 +92,7 @@ mutation{
   }
 }
 ```
-
+--- 
 ### Recipes Mutations/Queries
 
 #### Create a recipe
