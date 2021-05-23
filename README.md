@@ -43,28 +43,28 @@ Also you can try it on [heroku](https://recipe-digital-challenge.herokuapp.com/g
 #### Register
 ```
 mutation {
-  signUp(input:{
-  	name:"your name",
-    email:"my@email.com"
-    password:"super-secret-password"
-  }) {
+	signUp(input:{
+		name:"your name",
+		email:"my@email.com"
+		password:"super-secret-password"
+	}) {
 		user {
-      id
-    }
-    token
-  }
+			id
+		}
+		token
+	}
 }
 ```
 
 #### Login
 ```
 mutation {
-  login(input:{
-  	email:"my@email.com"
-    password:"super-secret-password"
-  }) {
-    token
-  }
+	login(input:{
+		email:"my@email.com"
+		password:"super-secret-password"
+	}) {
+		token
+	}
 }
 ```
 
@@ -73,7 +73,7 @@ You can copy the token in the response and put it in the headers for some of the
 
 ```
 {
-  "authorization":"Bearer <token>"
+	"authorization":"Bearer <token>"
 }
 ```
 
@@ -81,13 +81,72 @@ You can copy the token in the response and put it in the headers for some of the
 
 ### Category Mutations/Queries
 
+#### Create a category
 ```
 mutation{
-  createCategory(categoryInput:{
-  	name:"ensaladas"
-  }) {
-    id
-    name
-  }
+	createCategory(categoryInput:{
+		name:"ensaladas"
+	}) {
+		id
+		name
+	}
+}
+```
+
+### Recipes Mutations/Queries
+
+#### Create a recipe
+
+> Replace categoryId with the id that returned the previous mutation. 
+```
+mutation{
+	createRecipe(recipeInput:{
+		name:"ensalada rusa ",
+		categoryId: 1
+		description:"Receta de ensalada rusa de la Abuela"
+		ingredients: [
+			{
+				item:"Papas",
+				unit:"unidad",
+				quantity: 4
+			},
+			{
+				item:"zanahoria",
+				unit:"unidad"
+				quantity: 2
+			},
+			{
+				item:"arvejas",
+				unit:"lata"
+				quantity: 1
+			},
+			{
+				item:"mayonesa",
+				unit:"taza"
+				quantity: 1
+			}
+		]
+	}) {
+		name
+		category {
+			id
+		}
+	}
+}
+```
+
+#### Get your Recipes
+
+```
+{
+	getMyRecipes {
+		id
+		name
+		ingredients {
+			item
+			unit
+			quantity
+		}
+	}
 }
 ```
