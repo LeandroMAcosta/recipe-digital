@@ -101,7 +101,7 @@ mutation{
 ```javascript
 mutation{
   createRecipe(recipeInput:{
-    name:"ensalada rusa ",
+    name:"ensalada rusa",
     categoryId: 1
     description:"Receta de ensalada rusa de la Abuela"
     ingredients: [
@@ -146,6 +146,23 @@ mutation{
       item
       unit
       quantity
+    }
+  }
+}
+```
+
+### You can add filters too
+
+Try to get all the recipes with "ensalada" in the name 
+```javascript
+{
+  getRecipes(name:"lada") {
+    id
+    name
+    ingredients {
+      unit
+      quantity
+      id
     }
   }
 }
